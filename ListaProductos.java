@@ -107,34 +107,5 @@ public class ListaProductos {
         }
     }
 
-    // Método adicional: imprimir reporte de costos
-    public void imprimirReporteCostos() {
-        if (primero == null) {
-            System.out.println("No hay productos en la lista.");
-            return;
-        }
 
-        System.out.println("\n=== REPORTE DE COSTOS ===");
-        double costoTotalAcumulado = 0;
-        NodoProducto nodoTemp = primero;
-        int contador = 1;
-
-        while (nodoTemp != null) {
-            Producto producto = nodoTemp.getProducto();
-            double costoTotalProducto = producto.calcularCostoTotal();
-            costoTotalAcumulado += costoTotalProducto;
-
-            System.out.println(contador + ". " + producto.getNombre());
-            System.out.println("   Cantidad: " + producto.getCantidad());
-            System.out.println("   Precio unitario: $" + producto.getPrecio());
-            System.out.println("   Costo total: $" + costoTotalProducto);
-            System.out.println("   --------------------");
-
-            nodoTemp = nodoTemp.getSiguiente();
-            contador++;
-        }
-
-        System.out.println("COSTO TOTAL ACUMULADO: $" + costoTotalAcumulado);
-        System.out.println("==========================\n");
-    }
 }
