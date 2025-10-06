@@ -44,9 +44,6 @@ public static void menu() {
                     eliminarProducto();
                     break;
                 case 6:
-                    listaProductos.imprimirReporteCostos();
-                    break;
-                case 7:
                     agregarImagenProducto();
                     break;
                 case 0:
