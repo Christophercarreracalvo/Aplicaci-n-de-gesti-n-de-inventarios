@@ -67,7 +67,7 @@ public class ColaClientes {
         }
     }
 
-    // Obtener tamaño total de la cola
+    // Obtener tamaño total de la colas
     public int obtenerTamanoTotal() {
         return colaPrioridad1.size() + colaPrioridad2.size() + colaPrioridad3.size();
     }
