@@ -1,39 +1,36 @@
 public class ListaProductos {
-    private NodoProducto primero;
+    private Producto primero;
 
     public ListaProductos() {
         primero = null;
     }
 
-    public NodoProducto getPrimero() {
+    public Producto getPrimero() {
         return primero;
     }
 
-    public void setPrimero(NodoProducto nuevoPrimero) {
+    public void setPrimero(Producto nuevoPrimero) {
         primero = nuevoPrimero;
     }
 
     // Insertar al inicio
     public void insertarInicio(Producto producto) {
-        NodoProducto nuevoNodo = new NodoProducto(producto);
-        nuevoNodo.setSiguiente(primero);
-        setPrimero(nuevoNodo);
+        producto.setSiguiente(primero);
+        setPrimero(producto);
     }
 
     // Insertar al final
     public void insertarFinal(Producto producto) {
-        NodoProducto nuevoNodo = new NodoProducto(producto);
-
         if (primero == null) {
-            setPrimero(nuevoNodo);
+            setPrimero(producto);
             return;
         }
 
-        NodoProducto nodoTemp = primero;
-        while (nodoTemp.getSiguiente() != null) {
-            nodoTemp = nodoTemp.getSiguiente();
+        Producto productoTemp = primero;
+        while (productoTemp.getSiguiente() != null) {
+            productoTemp = productoTemp.getSiguiente();
         }
-        nodoTemp.setSiguiente(nuevoNodo);
+        productoTemp.setSiguiente(producto);
     }
 
     // Buscar producto por nombre
@@ -43,13 +40,13 @@ public class ListaProductos {
             return null;
         }
 
-        NodoProducto nodoTemp = primero;
-        while (nodoTemp != null) {
-            if (nodoTemp.getProducto().getNombre().equalsIgnoreCase(nombreBuscar)) {
+        Producto productoTemp = primero;
+        while (productoTemp != null) {
+            if (productoTemp.getNombre().equalsIgnoreCase(nombreBuscar)) {
                 System.out.println("El producto se encontró en la estructura.");
-                return nodoTemp.getProducto();
+                return productoTemp;
             }
-            nodoTemp = nodoTemp.getSiguiente();
+            productoTemp = productoTemp.getSiguiente();
         }
 
         System.out.println("El producto buscado no se encontró en la estructura.");
@@ -64,27 +61,27 @@ public class ListaProductos {
         }
 
         // Caso especial: eliminar el primer nodo
-        if (primero.getProducto().getNombre().equalsIgnoreCase(nombreEliminar)) {
+        if (primero.getNombre().equalsIgnoreCase(nombreEliminar)) {
             primero = primero.getSiguiente();
             System.out.println("Producto eliminado exitosamente.");
             return true;
         }
 
         // Buscar el nodo a eliminar
-        NodoProducto nodoTemp = primero;
-        NodoProducto anterior = null;
+        Producto productoTemp = primero;
+        Producto anterior = null;
 
-        while (nodoTemp != null && !nodoTemp.getProducto().getNombre().equalsIgnoreCase(nombreEliminar)) {
-            anterior = nodoTemp;
-            nodoTemp = nodoTemp.getSiguiente();
+        while (productoTemp != null && !productoTemp.getNombre().equalsIgnoreCase(nombreEliminar)) {
+            anterior = productoTemp;
+            productoTemp = productoTemp.getSiguiente();
         }
 
-        if (nodoTemp == null) {
+        if (productoTemp == null) {
             System.out.println("Producto no encontrado.");
             return false;
         }
 
-        anterior.setSiguiente(nodoTemp.getSiguiente());
+        anterior.setSiguiente(productoTemp.getSiguiente());
         System.out.println("Producto eliminado exitosamente.");
         return true;
     }
@@ -96,16 +93,71 @@ public class ListaProductos {
             return;
         }
 
-        NodoProducto nodoTemp = primero;
+        Producto productoTemp = primero;
         int contador = 1;
 
-        while (nodoTemp != null) {
+        while (productoTemp != null) {
             System.out.println("\nProducto #" + contador + ":");
-            nodoTemp.getProducto().mostrarProducto();
-            nodoTemp = nodoTemp.getSiguiente();
+            productoTemp.mostrarProducto();
+            productoTemp = productoTemp.getSiguiente();
             contador++;
         }
     }
 
+    // Reporte de costos totales
+    public void imprimirReporteCostos() {
+        if (primero == null) {
+            System.out.println("No hay productos en la lista.");
+            return;
+        }
 
+        Producto productoTemp = primero;
+        double costoTotalAcumulado = 0;
+        int contador = 1;
+
+        System.out.println("\n=== REPORTE DE COSTOS ===");
+        while (productoTemp != null) {
+            double costoProducto = productoTemp.calcularCostoTotal();
+            costoTotalAcumulado += costoProducto;
+
+            System.out.println(contador + ". " + productoTemp.getNombre() +
+                    " | Cantidad: " + productoTemp.getCantidad() +
+                    " | Costo unitario: $" + productoTemp.getPrecio() +
+                    " | Costo total: $" + costoProducto);
+
+            productoTemp = productoTemp.getSiguiente();
+            contador++;
+        }
+
+        System.out.println("-----------------------------------");
+        System.out.println("COSTO TOTAL ACUMULADO: $" + costoTotalAcumulado);
+        System.out.println("===================================");
+    }
+
+    // Método para calcular total del carrito
+    public double calcularTotalCarrito() {
+        double total = 0;
+        Producto actual = primero;
+        while (actual != null) {
+            total += actual.calcularCostoTotal();
+            actual = actual.getSiguiente();
+        }
+        return total;
+    }
+
+    // Método para verificar si la lista está vacía
+    public boolean estaVacia() {
+        return primero == null;
+    }
+
+    // Método para obtener el tamaño de la lista
+    public int obtenerTamano() {
+        int contador = 0;
+        Producto actual = primero;
+        while (actual != null) {
+            contador++;
+            actual = actual.getSiguiente();
+        }
+        return contador;
+    }
 }
