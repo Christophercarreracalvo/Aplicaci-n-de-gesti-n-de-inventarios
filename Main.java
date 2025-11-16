@@ -329,60 +329,10 @@ public class Main {
     }
 
     private static void agregarClienteCola() throws IOException {
-        System.out.println("\n👥 AGREGAR CLIENTE A LA COLA DE ATENCIÓN");
-        System.out.print("👤 Nombre del cliente: ");
-        String nombreCliente = reader.readLine();
-
-        System.out.println("\n🎯 Tipo de cliente:");
-        System.out.println("   1 - 🟢 Básico");
-        System.out.println("   2 - 🟡 Afiliado");
-        System.out.println("   3 - 🔴 Premium");
-        System.out.print("   Seleccione (1-3): ");
-
-        int prioridad = Integer.parseInt(reader.readLine());
-        if (prioridad < 1 || prioridad > 3) {
-            System.out.println("⚠️  Prioridad no válida. Se asignará BÁSICO.");
-            prioridad = 1;
-        }
-
-        Cliente cliente = new Cliente(nombreCliente, prioridad);
-        llenarCarritoCliente(cliente);
-        tienda.agregarCliente(cliente);
+        tienda.crearClienteConCarrito();
     }
 
-    private static void llenarCarritoCliente(Cliente cliente) throws IOException {
-        System.out.println("\n🛒 LLENAR CARRITO DEL CLIENTE: " + cliente.getNombre());
-        char continuar = 's';
 
-        while (continuar == 's' || continuar == 'S') {
-            System.out.println("\n📋 Productos disponibles en inventario:");
-            tienda.listarProductosDisponibles();
-
-            System.out.print("\n🔍 Ingrese el nombre del producto a agregar: ");
-            String nombreProducto = reader.readLine();
-
-            Producto producto = tienda.buscarProductoInventario(nombreProducto);
-            if (producto != null) {
-                System.out.print("🔢 Cantidad a agregar (disponible: " + producto.getInventario() + "): ");
-                int cantidad = Integer.parseInt(reader.readLine());
-
-                if (cantidad > 0 && cantidad <= producto.getInventario()) {
-                    cliente.agregarAlCarrito(producto, cantidad);
-                    System.out.println("✅ Producto agregado al carrito.");
-                } else {
-                    System.out.println("❌ Cantidad no válida o insuficiente stock.");
-                }
-            } else {
-                System.out.println("❌ Producto no encontrado en el inventario.");
-            }
-
-            System.out.print("\n¿Desea agregar otro producto? (s/n): ");
-            continuar = reader.readLine().charAt(0);
-        }
-
-        System.out.println("🎉 Carrito completado para " + cliente.getNombre());
-        System.out.println("💰 Total en carrito: $" + cliente.calcularTotalCarrito());
-    }
 
     private static void cargarDatosEjemploTienda() {
         // Agregar algunos clientes de ejemplo

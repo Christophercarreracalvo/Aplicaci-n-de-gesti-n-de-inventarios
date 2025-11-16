@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Tienda {
     private String nombre;
     private ArbolProductos inventario;
@@ -40,7 +42,7 @@ public class Tienda {
         colaClientes.encolar(cliente);
     }
 
-    // Atender siguiente cliente
+    // ✅ MÉTODO MEJORADO: Atender siguiente cliente
     public void atenderSiguienteCliente() {
         Cliente cliente = colaClientes.atenderSiguiente();
         if (cliente != null) {
@@ -48,37 +50,36 @@ public class Tienda {
             System.out.println("🎉 ATENDIENDO A CLIENTE: " + cliente.getNombre().toUpperCase());
             System.out.println("⭐".repeat(60));
 
-            // Mostrar factura
+            // Mostrar factura detallada
             cliente.mostrarFactura();
 
             // Actualizar inventario después de la compra
             actualizarInventario(cliente);
 
-            // Vaciar carrito del cliente
-            cliente.vaciarCarrito();
-
             System.out.println("✅ Cliente atendido exitosamente.");
         }
     }
 
-    // Actualizar inventario después de una compra
+    // ✅ MÉTODO MEJORADO: Actualizar inventario después de una compra
     private void actualizarInventario(Cliente cliente) {
-        Producto actual = cliente.getCarrito().getPrimero();
-        while (actual != null) {
-            Producto productoInventario = inventario.buscar(actual.getNombre());
+        List<CartItem> items = cliente.getCarrito().getItems();
+        for (CartItem item : items) {
+            Producto productoInventario = inventario.buscar(item.getProduct().getNombre());
 
             if (productoInventario != null) {
                 // Reducir el inventario
-                boolean exito = productoInventario.reducirInventario(actual.getCantidad());
+                boolean exito = productoInventario.reducirInventario(item.getQuantity());
                 if (exito) {
-                    System.out.println("✅ Inventario actualizado: " + actual.getNombre() +
-                            " -" + actual.getCantidad() + " unidades");
+                    System.out.println("✅ Inventario actualizado: " + item.getProduct().getNombre() +
+                            " -" + item.getQuantity() + " unidades");
                 } else {
-                    System.out.println("❌ Error al actualizar inventario para: " + actual.getNombre());
+                    System.out.println("❌ Error al actualizar inventario para: " + item.getProduct().getNombre());
                 }
             }
-            actual = actual.getSiguiente();
         }
+
+        // Vaciar carrito del cliente después de la compra
+        cliente.vaciarCarrito();
     }
 
     // Mostrar estado de la tienda
@@ -111,5 +112,40 @@ public class Tienda {
     public boolean verificarDisponibilidad(String nombreProducto, int cantidad) {
         Producto producto = inventario.buscar(nombreProducto);
         return producto != null && producto.haySuficienteInventario(cantidad);
+    }
+
+    // ✅ NUEVO: Método para crear cliente con gestión interactiva de carrito
+    public void crearClienteConCarrito() {
+        try {
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(System.in));
+
+            System.out.println("\n👥 CREAR NUEVO CLIENTE");
+            System.out.print("👤 Nombre del cliente: ");
+            String nombreCliente = reader.readLine();
+
+            System.out.println("\n🎯 Tipo de cliente:");
+            System.out.println("   1 - 🟢 Básico");
+            System.out.println("   2 - 🟡 Afiliado");
+            System.out.println("   3 - 🔴 Premium");
+            System.out.print("   Seleccione (1-3): ");
+
+            int prioridad = Integer.parseInt(reader.readLine());
+            if (prioridad < 1 || prioridad > 3) {
+                System.out.println("⚠️  Prioridad no válida. Se asignará BÁSICO.");
+                prioridad = 1;
+            }
+
+            Cliente cliente = new Cliente(nombreCliente, prioridad);
+
+            // Gestión interactiva del carrito
+            cliente.gestionarCarritoInteractivo(this);
+
+            // Agregar cliente a la cola
+            agregarCliente(cliente);
+
+        } catch (Exception e) {
+            System.out.println("❌ Error al crear cliente: " + e.getMessage());
+        }
     }
 }
